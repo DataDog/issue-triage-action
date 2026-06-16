@@ -32,12 +32,15 @@ jobs:
     with:
       slack_map_path: .github/workflows/config/github_slack_map.yaml
       environment_name: main
+    secrets: inherit
 ```
 
 The triage job reads its secrets directly from the GitHub environment named by
-`environment_name` (so the caller passes no `secrets:`). If your secrets are
-named something other than `ANTHROPIC_API_KEY` / `SLACK_BOT_TOKEN`, set
-`anthropic_api_key_secret_name` / `slack_bot_token_secret_name`.
+`environment_name`. This requires **`secrets: inherit`** on the caller —
+without it, environment-scoped secrets resolve to empty strings in the called
+workflow. If your secrets are named something other than `ANTHROPIC_API_KEY` /
+`SLACK_BOT_TOKEN`, set `anthropic_api_key_secret_name` /
+`slack_bot_token_secret_name`.
 
 See [`examples/caller.yml`](examples/caller.yml) for the full template with all optional inputs.
 
@@ -55,7 +58,7 @@ See [`examples/caller.yml`](examples/caller.yml) for the full template with all 
 
 ## Secrets
 
-The triage job reads these directly from the GitHub environment named by `environment_name` — the caller does **not** pass them via a `secrets:` block. Override the `*_secret_name` inputs if your secrets are named differently.
+The triage job reads these directly from the GitHub environment named by `environment_name`. The caller does not list them individually — it just passes **`secrets: inherit`** (required, otherwise environment secrets resolve to empty strings). Override the `*_secret_name` inputs if your secrets are named differently.
 
 | Logical secret | Default name | Description |
 |----------------|--------------|-------------|

@@ -30,3 +30,6 @@ jobs:
       # anthropic_api_key_secret_name: ANTHROPIC_API_KEY        # optional, this is the default
       # slack_bot_token_secret_name: SLACK_DATADOG_AGENT_BOT_TOKEN  # optional; override if your secret is named differently
       issue_number: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.issue_number) || 0 }}
+    # Required: lets the reusable workflow read the secrets from the GitHub
+    # environment named above. Without it, environment secrets resolve to "".
+    secrets: inherit
