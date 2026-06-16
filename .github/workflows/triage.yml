@@ -19,6 +19,7 @@ on:
 jobs:
     triage:
         permissions:
+            contents: read
             issues: write
             actions: write
             id-token: write
