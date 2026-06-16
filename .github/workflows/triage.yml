@@ -24,7 +24,6 @@ jobs:
       environment_name: test              # required — create a GitHub environment named "test" in this repo
       # fallback_channel: agent-devx-ops   # optional, this is the default
       # fallback_team: agent-devx          # optional, this is the default
+      # Secrets ANTHROPIC_API_KEY and SLACK_BOT_TOKEN are read from the "test"
+      # environment by the reusable workflow — no secrets: block needed here.
       issue_number: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.issue_number) || 0 }}
-    secrets:
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      SLACK_BOT_TOKEN:   ${{ secrets.SLACK_DATADOG_AGENT_BOT_TOKEN }}
