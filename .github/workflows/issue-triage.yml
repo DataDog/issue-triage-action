@@ -26,11 +26,19 @@ on:
         description: 'Issue number to triage — only required when the caller is triggered by workflow_dispatch'
         required: false
         type: number
-    secrets:
-      ANTHROPIC_API_KEY:
-        required: true
-      SLACK_BOT_TOKEN:
-        required: true
+      anthropic_api_key_secret_name:
+        description: 'Name of the secret (in the GitHub environment / repo / org) holding the Anthropic API key.'
+        required: false
+        type: string
+        default: 'ANTHROPIC_API_KEY'
+      slack_bot_token_secret_name:
+        description: 'Name of the secret (in the GitHub environment / repo / org) holding the Slack bot token.'
+        required: false
+        type: string
+        default: 'SLACK_BOT_TOKEN'
+    # Secrets are read directly from the GitHub environment named by `environment_name`
+    # (see the triage job), so the caller does not pass them. Use the
+    # *_secret_name inputs above if your secrets are named differently.
 
 jobs:
   # ── Stage 1: fetch issue, guard against secrets in content, upload artifact ──
@@ -140,7 +148,7 @@ jobs:
         id: claude
         uses: anthropics/claude-code-action@86eb26bf0139bdd75acd15ea5f00f45ee0a284c2 # v1.0.122
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          anthropic_api_key: ${{ secrets[inputs.anthropic_api_key_secret_name] }}
           claude_args: --allowedTools "Read(issue_details.json),Edit(claude.txt)"
           github_token: ${{ github.token }}
           prompt: |
@@ -321,7 +329,7 @@ jobs:
       - name: Send Slack notification
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         env:
-          SLACK_TOKEN:      ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_TOKEN:      ${{ secrets[inputs.slack_bot_token_secret_name] }}
           TEAM:             ${{ steps.extract-info.outputs.team }}
           SLACK:            ${{ steps.extract-info.outputs.slack }}
           CONFIDENCE:       ${{ steps.extract-info.outputs.confidence }}

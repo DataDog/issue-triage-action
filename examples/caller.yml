@@ -1,9 +1,10 @@
 ---
 # Drop this file into .github/workflows/ in any repo that wants issue triage.
 # Prerequisites:
-#   - ANTHROPIC_API_KEY secret set in the repo (or org)
-#   - SLACK_DATADOG_AGENT_BOT_TOKEN secret set in the repo (or org)
-#   - A GitHub environment matching the environment_name input below
+#   - A GitHub environment matching the environment_name input below, holding the
+#     Anthropic API key and Slack bot token secrets (read directly by the triage
+#     job — the caller passes no secrets). Default secret names are
+#     ANTHROPIC_API_KEY and SLACK_BOT_TOKEN; override via the *_secret_name inputs.
 #   - Issue labels "pending", "oss/0", and "team/<name>" labels created in the repo
 #   - A github_slack_map.yaml file at the path given in slack_map_path
 name: "Issue Triage"
@@ -26,7 +27,6 @@ jobs:
       environment_name: main               # required — must match a GitHub environment in this repo
       # fallback_channel: agent-devx-ops   # optional, this is the default
       # fallback_team: agent-devx           # optional, this is the default
+      # anthropic_api_key_secret_name: ANTHROPIC_API_KEY        # optional, this is the default
+      # slack_bot_token_secret_name: SLACK_DATADOG_AGENT_BOT_TOKEN  # optional; override if your secret is named differently
       issue_number: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.issue_number) || 0 }}
-    secrets:
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      SLACK_BOT_TOKEN:   ${{ secrets.SLACK_DATADOG_AGENT_BOT_TOKEN }}
