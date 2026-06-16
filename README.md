@@ -45,7 +45,7 @@ See [`examples/caller.yml`](examples/caller.yml) for the full template with all 
 | `slack_map_path` | ✅ | — | Path to `github_slack_map.yaml` relative to the calling repo root |
 | `fallback_channel` | | `agent-devx-ops` | Slack channel used when no team match is found |
 | `fallback_team` | | `agent-devx` | Team label applied when no team match is found (without `team/` prefix) |
-| `environment_name` | | `main` | GitHub environment name (must have `id-token: write` for OIDC) |
+| `environment_name` | | `` (none) | Optional GitHub environment to pin the triage job to (e.g. secret-approval gating). Leave empty to run without any environment |
 | `issue_number` | | — | Issue number for `workflow_dispatch`-triggered callers |
 
 ## Secrets
@@ -58,7 +58,7 @@ See [`examples/caller.yml`](examples/caller.yml) for the full template with all 
 ## Prerequisites per repo
 
 - **Secrets**: `ANTHROPIC_API_KEY` and `SLACK_DATADOG_AGENT_BOT_TOKEN` (or equivalent) set at repo or org level.
-- **GitHub environment**: An environment named `main` (or the value of `environment_name`) with `id-token: write` permission.
+- **GitHub environment** _(optional)_: Only needed if you set `environment_name` — create that environment to gate the triage job (e.g. secret-approval rules). Omit the input to run without one.
 - **Issue labels**: `pending`, `oss/0`, and one `team/<name>` label per team listed in CODEOWNERS.
 - **Slack map**: A `github_slack_map.yaml` at the path given in `slack_map_path` — see the [datadog-agent reference file](https://github.com/DataDog/datadog-agent/blob/main/tasks/libs/pipeline/github_slack_map.yaml) for the format.
 

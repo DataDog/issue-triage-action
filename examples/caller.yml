@@ -3,7 +3,6 @@
 # Prerequisites:
 #   - ANTHROPIC_API_KEY secret set in the repo (or org)
 #   - SLACK_DATADOG_AGENT_BOT_TOKEN secret set in the repo (or org)
-#   - A GitHub environment named "main" with id-token: write permission
 #   - Issue labels "pending", "oss/0", and "team/<name>" labels created in the repo
 #   - A github_slack_map.yaml file at the path given in slack_map_path
 name: "Issue Triage"
@@ -25,7 +24,7 @@ jobs:
       slack_map_path: .github/workflows/config/github_slack_map.yaml
       # fallback_channel: agent-devx-ops   # optional, this is the default
       # fallback_team: agent-devx           # optional, this is the default
-      # environment_name: main              # optional, this is the default
+      # environment_name: main              # optional; omit to run without a GitHub environment
       issue_number: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.issue_number) || 0 }}
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

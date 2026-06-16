@@ -19,10 +19,10 @@ on:
         type: string
         default: 'agent-devx'
       environment_name:
-        description: 'GitHub environment name (must have id-token: write permission for OIDC)'
+        description: 'Optional GitHub environment to pin the triage job to (e.g. for secret-approval gating). Leave empty to run without any environment.'
         required: false
         type: string
-        default: 'main'
+        default: ''
       issue_number:
         description: 'Issue number to triage — only required when the caller is triggered by workflow_dispatch'
         required: false
@@ -125,8 +125,9 @@ jobs:
       contents: read    # Read-only token for Claude code action
       issues: write     # Required for adding labels
       actions: read     # Required for downloading artifacts
-    environment:
-      name: ${{ inputs.environment_name }}
+    # Empty environment_name resolves to no environment (no setup required by
+    # default); pass a name to gate this job behind a GitHub environment.
+    environment: ${{ inputs.environment_name }}
     steps:
 
       - name: Checkout repository
