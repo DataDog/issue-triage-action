@@ -4,10 +4,11 @@ Reusable GitHub Actions workflow that automatically triages new issues using Cla
 
 ## How it works
 
-The workflow runs in two sequential jobs:
+The workflow runs in three sequential jobs, split so the AI step holds no write permissions:
 
-1. **prepare** — Adds `pending`/`oss/0` labels, fetches issue details, checks for secrets in the issue content, and uploads a sanitised `issue_details.json` artifact.
-2. **triage** — Downloads the artifact, checks out the calling repo, runs Claude to analyse the issue against CODEOWNERS, validates the output, applies a `team/` label, and sends a Slack message.
+1. **prepare** (`issues: write`) — Adds `pending`/`oss/0` labels, fetches issue details, checks for secrets in the issue content, and uploads a sanitised `issue_details.json` artifact.
+2. **analyse** (read-only, **no** `issues: write`) — Downloads the artifact, checks out the calling repo, runs Claude to analyse the issue against CODEOWNERS, and uploads its raw `claude.txt` output as an artifact. The AI cannot modify the issue.
+3. **post** (`issues: write`) — Never runs the AI. Re-downloads the pristine artifacts, re-scans the AI output for secrets/prompt-injection, validates the chosen team against CODEOWNERS and the channel against the Slack map, then applies the `team/` label and sends the Slack message.
 
 ## Usage
 

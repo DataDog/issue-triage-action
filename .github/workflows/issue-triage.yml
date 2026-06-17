@@ -115,16 +115,17 @@ jobs:
           path: issue_details.json
           retention-days: 1
 
-  # ── Stage 2: Claude analysis, labelling, Slack notification ──────────────────
-  triage:
+  # ── Stage 2: Claude analysis (read-only — must NOT be able to modify issues) ──
+  analyse:
     needs: prepare
     runs-on: ubuntu-latest
     permissions:
       id-token: write   # Required for OIDC token
       contents: read    # Read-only token for Claude code action
-      issues: write     # Required for adding labels
-      actions: read     # Required for downloading artifacts
-    # Required input — the calling repo must have a GitHub environment with this name.
+      actions: read     # Required for up/downloading artifacts
+      # Deliberately NO `issues: write`: the AI step cannot modify issues.
+      # Labelling and Slack notification happen in the separate `post` job below.
+    # Required input — the environment (holds ANTHROPIC_API_KEY) the job is pinned to.
     environment: ${{ inputs.environment_name }}
     steps:
 
@@ -195,6 +196,41 @@ jobs:
             Write this exact same content in the local claude.txt file.
 
             Start your analysis now.
+
+      - name: Ensure analysis output exists
+        run: touch claude.txt
+
+      - name: Upload analysis output for post job
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: claude-output
+          path: claude.txt
+          retention-days: 1
+
+  # ── Stage 3: validate AI output, apply label, notify Slack (never runs AI) ───
+  post:
+    needs: analyse
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read    # Read CODEOWNERS / slack map for validation
+      issues: write     # Required for adding the team label
+      actions: read     # Required for downloading artifacts
+    # Required input — the environment (holds SLACK_BOT_TOKEN) the job is pinned to.
+    environment: ${{ inputs.environment_name }}
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Download issue artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: triage-data
+
+      - name: Download analysis output
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: claude-output
 
       - name: Extract and validate triage output
         id: extract-info
