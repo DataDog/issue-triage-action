@@ -1,0 +1,7 @@
+Component,Origin,License,Copyright
+core,actions/checkout,MIT,Copyright (c) 2018 GitHub Inc. and contributors
+core,actions/download-artifact,MIT,Copyright (c) 2018 GitHub Inc. and contributors
+core,actions/github-script,MIT,Copyright (c) 2019 GitHub Inc. and contributors
+core,actions/upload-artifact,MIT,Copyright (c) 2018 GitHub Inc. and contributors
+core,anthropics/claude-code-action,MIT,Copyright (c) 2025 Anthropic PBC
+core,@slack/web-api,MIT,Copyright (c) 2014- Slack Technologies LLC
