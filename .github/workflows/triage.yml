@@ -19,7 +19,7 @@ jobs:
             issues: write
             actions: write
             id-token: write
-        uses: DataDog/issue-triage-action/.github/workflows/issue-triage.yml@702836934f076df4878bf144472d23f06b5aa999 # v1.0.0
+        uses: DataDog/issue-triage-action/.github/workflows/issue-triage.yml@ee200860ba35ba6ed3ad565e918afb16811fe975 # v1.0.0
         with:
             slack_map_path: .github/workflows/config/github_slack_map.yaml
             environment_name: test # required — create a GitHub environment named "test" in this repo
