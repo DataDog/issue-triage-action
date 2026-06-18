@@ -35,6 +35,7 @@ on:
 jobs:
   # ── Stage 1: fetch issue, guard against secrets in content, upload artifact ──
   prepare:
+    name: Prepare issue content
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -117,6 +118,7 @@ jobs:
 
   # ── Stage 2: Claude analysis (read-only — must NOT be able to modify issues) ──
   analyse:
+    name: Analyse issue content
     needs: prepare
     runs-on: ubuntu-latest
     permissions:
@@ -209,6 +211,7 @@ jobs:
 
   # ── Stage 3: validate AI output, apply label, notify Slack (never runs AI) ───
   post:
+    name: Post label and message
     needs: analyse
     runs-on: ubuntu-latest
     permissions:
@@ -239,9 +242,16 @@ jobs:
           FALLBACK_TEAM="${{ inputs.fallback_team }}"
           SLACK_MAP_PATH="${{ inputs.slack_map_path }}"
 
-          # Build allowed team labels from CODEOWNERS
-          if [ -f .github/CODEOWNERS ]; then
-            grep -o '@[A-Za-z0-9_.-]*/[A-Za-z0-9_.-]\+' .github/CODEOWNERS | sort -u | sed 's|^@.*\/|team\/|' > team_labels.txt
+          # Build allowed team labels from any CODEOWNERS in GitHub's canonical locations
+          : > team_labels.txt
+          for codeowner_path in .github/CODEOWNERS CODEOWNERS docs/CODEOWNERS; do
+            [ -f "$codeowner_path" ] || continue
+            grep -o '@[A-Za-z0-9_.-]*/[A-Za-z0-9_.-]\+' "$codeowner_path" >> team_labels.txt
+          done
+
+          if [ -s team_labels.txt ]; then
+            sort -u team_labels.txt | sed 's|^@.*/|team/|' > team_labels.txt.tmp
+            mv team_labels.txt.tmp team_labels.txt
           else
             echo "team/${FALLBACK_TEAM}" > team_labels.txt
           fi
