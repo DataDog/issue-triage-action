@@ -1,5 +1,4 @@
 # CODEOWNERS — used by the triage workflow to derive the list of valid team labels.
 # Each `@DataDog/<team>` here becomes a `team/<team>` label that Claude may assign.
 
-# CI pipelines
-/.github/workflows/             @DataDog/agent-build
+*    @DataDog/agent-devx
