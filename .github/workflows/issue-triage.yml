@@ -404,7 +404,7 @@ jobs:
                 *Auto-assigned* [${confidenceEmoji}] to \`${teamName}\` (Confidence: ${confidence})
                 *Analysis:* ${explanation}
               `;
-              message += `\nYour team was assigned automatically using :claude: analysis.\nIf the assignment is incorrect, please redirect by updating the \`team/xyz\` label or reaching out to #${process.env.FALLBACK_CHANNEL}.\n\nYou can refer to <https://datadoghq.atlassian.net/wiki/spaces/agent/pages/5943951863/Agent+GitHub+repositories+issues+and+PR+processing+Framework#Framework-for-backlog-processing|this guide> to respond to GH issues.`;
+              message += `\nYour team was assigned automatically using :claude: analysis.\nIf the assignment is incorrect, please redirect by updating the \`team/xyz\` label or reaching out to #${process.env.FALLBACK_CHANNEL}.`;
 
               const response = await slack.chat.postMessage({
                 channel,
