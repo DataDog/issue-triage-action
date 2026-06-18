@@ -2,9 +2,7 @@
 # The triage workflow looks up the selected team here to find its channel.
 # Format mirrors datadog-agent's tasks/libs/pipeline/github_slack_map.yaml.
 #
-# IMPORTANT: the Slack bot (SLACK_DATADOG_AGENT_BOT_TOKEN) must be a member of
-# each channel below, otherwise the notification step will fail (the job won't
-# fail — the error is caught — but no message is posted).
-"@datadog/agent-build": "#agent-test-alerts"
-"@datadog/agent-delivery": "#celian-tests"
-"@datadog/agent-runtimes": "#agent-notifications-testing"
+# IMPORTANT: the Slack bot (SLACK_BOT_TOKEN) must be a member of each channel
+# below, otherwise the notification step will fail (the job won't fail — the
+# error is caught — but no message is posted).
+"@datadog/agent-devx": "#agent-devx-ops"
