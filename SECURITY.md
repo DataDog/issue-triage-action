@@ -5,7 +5,7 @@
 If you discover a security vulnerability in this project, **do not open a public GitHub issue**.
 
 Please report it privately via the GitHub Security Advisory feature:
-[Report a vulnerability](../../security/advisories/new)
+[Report a vulnerability](https://github.com/DataDog/issue-triage-action/security/advisories/new)
 
 Alternatively, email **security@datadoghq.com** with:
 - A description of the vulnerability
