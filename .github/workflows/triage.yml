@@ -18,8 +18,9 @@ jobs:
             contents: read
             issues: write
             actions: write
-            id-token: write
-        uses: DataDog/issue-triage-action/.github/workflows/issue-triage.yml@702836934f076df4878bf144472d23f06b5aa999 # v1.0.0
+        # Use the local reusable workflow so workflow_dispatch can test changes
+        # from the selected branch, like code-review-action's live caller workflow.
+        uses: ./.github/workflows/issue-triage.yml
         with:
             slack_map_path: .github/workflows/config/github_slack_map.yaml
             environment_name: test # required — create a GitHub environment named "test" in this repo

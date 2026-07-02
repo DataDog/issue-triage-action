@@ -20,6 +20,10 @@ on:
 
 jobs:
   triage:
+    permissions:
+      contents: read
+      issues: write
+      actions: write
     uses: DataDog/issue-triage-action/.github/workflows/issue-triage.yml@main
     with:
       slack_map_path: .github/workflows/config/github_slack_map.yaml
